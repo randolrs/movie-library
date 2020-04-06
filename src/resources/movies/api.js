@@ -2,10 +2,23 @@
 // could be more dynamic but it's a code challenge and not a public project ¯\_(ツ)_/¯
 const SMALL_IMG_BASE_URL = 'http://image.tmdb.org/t/p/w300/';
 
+const popular = async (searchQuery) => {
+  const response = await fetch(`/api/movies/popular`);
+  const data = await response.json();
+
+  // adding absolute paths to the poster images
+  data.results = data.results.map(movie => {
+    if(movie.poster_path) movie.poster_path = `${ SMALL_IMG_BASE_URL }${ movie.poster_path }`;
+    return movie;
+  });
+
+  return data;
+}
+
 const index = async (searchQuery) => {
   if(!searchQuery) return { results: [] };
 
-  const response = await fetch(`/api/movies/${ searchQuery }`);
+  const response = await fetch(`/api/movies/search/${ searchQuery }`);
   const data = await response.json();
 
   // adding absolute paths to the poster images
@@ -27,6 +40,6 @@ const show = async (id) => {
   return data;
 }
 
-const Movie = { show, index };
+const Movie = { show, index, popular };
 
 export default Movie;

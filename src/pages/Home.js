@@ -8,9 +8,8 @@ import SearchInput from '../components/SearchInput';
 import MovieAPI from '../resources/movies/api';
 
 // potential optimations:
-// 1) add blank state: prompt user to enter search query where results are rendered
-// 2) add 'no results' component to render where search results would render when request returns no movies
-// 3) pagination
+// 1) add 'no results' component to render where search results would render when request returns no movies
+// 2) pagination
 
 const Home = () => {
   const [ movies, setMovies ] = useState([]);
@@ -21,7 +20,7 @@ const Home = () => {
   const params = new URLSearchParams(window.location.search);
   const queryParam = params.get('query');
 
-  const fetchMovies = async () => {
+  const fetchMoviesByQuery = async (queryParam) => {
     try {
       const { results } = await MovieAPI.index(queryParam || '');
       setMovies(results);
@@ -31,10 +30,24 @@ const Home = () => {
     }
   };
 
-  useEffect(() => {
-    if(queryParam) setSearchQuery(queryParam);
+  const fetchPopularMovies = async () => {
+    try {
+      const { results } = await MovieAPI.popular();
+      setMovies(results);
+    } catch(err) {
+      // potential optimazation: better request error handling
+      // react-toastify would work pretty well here
+    }
+  };
 
-    fetchMovies();
+
+  useEffect(() => {
+    if(queryParam) {
+      setSearchQuery(queryParam);
+      fetchMoviesByQuery(queryParam);
+    } else {
+      fetchPopularMovies();
+    }
   }, []);
 
   useEffect(() => {
@@ -42,7 +55,7 @@ const Home = () => {
   }, [ searchQuery ])
 
   useEffect(() => {
-    fetchMovies();
+    fetchMoviesByQuery(queryParam);
   }, [ queryParam ])
 
   return (

@@ -12,7 +12,19 @@ const convertParamsToString = (obj) => {
   }).join('&');
 }
 
-app.get('/api/movies/:query', function (req, res) {
+app.get('/api/movies/popular', function (req, res) {
+  const queryString = convertParamsToString({ api_key });
+
+  axios.get(`https://api.themoviedb.org/3/movie/popular?${ queryString }`)
+  .then(response => {
+    return res.send(response.data);
+  })
+  .catch(err => {
+    // potential optimazation: better request error handling
+  })
+});
+
+app.get('/api/movies/search/:query', function (req, res) {
   const { query } = req.params;
 
   const queryString = convertParamsToString({
