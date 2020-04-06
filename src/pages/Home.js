@@ -55,7 +55,11 @@ const Home = () => {
   }, [ searchQuery ])
 
   useEffect(() => {
-    fetchMoviesByQuery(queryParam);
+    if(queryParam) {
+      fetchMoviesByQuery(queryParam);
+    } else {
+      fetchPopularMovies();
+    }
   }, [ queryParam ])
 
   return (
