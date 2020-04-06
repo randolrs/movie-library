@@ -61,7 +61,7 @@ const Home = () => {
   return (
     <div>
       <PageHeader>
-        <header className="page-header-title">Search</header>
+        <header className="page-header-title">{ `${ queryParam ? `Search Results for "${ queryParam }"` : 'Popular Movies'}` }</header>
         <SearchContainer>
           <SearchInput value={ searchQuery } onChange={ (e) => setSearchQuery(e.target.value) } />
         </SearchContainer>
